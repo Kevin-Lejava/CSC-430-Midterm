@@ -10,10 +10,8 @@ CREATE TABLE user_profile (
 CREATE TABLE transaction (
   id SERIAL PRIMARY KEY,
   confirmation_number varchar(255),
-  user_id INTEGER,
-  CONSTRAINT FK_user_id
-    FOREIGN KEY (user_id)
-      REFERENCES user_profile(id) 
+  user_id INTEGER, CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES user_profile(id), 
+  vehicle_id INTEGER, CONSTRAINT FK_vehicle_id FOREIGN KEY (vehicle_id) REFERENCES car(id)
 );
 
 CREATE TABLE car (
