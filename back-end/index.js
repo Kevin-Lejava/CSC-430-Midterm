@@ -75,6 +75,19 @@ app.get("/car/:make/:color", async (req, res) => {
     }
 })
 
+//get all information of one vehicle
+app.get("/view/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const selection = await pool.query(
+            "SELECT * FROM car WHERE id = $1", [id]
+        );
+        res.json(selection.rows);
+    } catch (error) {
+        console.error(error.message)
+    }
+})
+
 app.listen(PORT, () => {
     console.log("server has started on port " + PORT)
 });

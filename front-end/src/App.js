@@ -7,8 +7,10 @@ import Register from './pages/Register'
 import UserHome from './pages/UserHome'
 import Checkout from './pages/Checkout'
 import Confirmation from './pages/Confirmation'
+import CarDetail from './pages/CarDetail'
 
 function App() {
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -17,6 +19,7 @@ function App() {
           <Route path="/Login" element={<Login />} />
           <Route path="/Register" element={<Register />} />
           <Route path="/UserHome" element={<UserHome />} />
+          <Route path="/CarDetail" element={<CarDetail />} />
           <Route path="/Checkout" element={<Checkout />} />
           <Route path="/Confirmation" element={<Confirmation />} />
         </Routes>

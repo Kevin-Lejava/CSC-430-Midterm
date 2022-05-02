@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios'
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function UserHome() {
 
     const [cars, setCars] = useState([])
     const [make, setMake] = useState("")
     const [color, setColor] = useState("")
-    const [redirect, setRedirect] = useState(false)
+    const navigate = useNavigate();
+    let carID = 0;
 
     const getAllCars = () => {
         try {
@@ -83,13 +84,15 @@ function UserHome() {
             getAllCars();
     }
 
-    const buy = (event) => {
-        event.preventDefault()
-        setRedirect(true);
+    const setSelection = (id) => {
+        carID = id;
+        console.log(carID)
+        redirect()
     }
 
-    if (redirect)
-        return (<Navigate to="/Checkout" />)
+    const redirect = () => {
+        navigate('/CarDetail', { state: { car: carID } });
+    }
 
     return (
         <div>
@@ -138,14 +141,14 @@ function UserHome() {
                                 </div>
                                 <ul className="list-group list-group-flush">
                                     <li className="list-group-item">${car.price}</li>
-                                    <li className="list-group-item"><button className="btn btn-primary" onClick={buy}>Buy</button></li>
+                                    <li className="list-group-item"><button className="btn btn-primary" onClick={(e) => { setSelection(car.id); }}>View</button></li>
                                 </ul>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 
