@@ -1,19 +1,18 @@
-import { Navigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import axios from 'axios'
 
 function Login(props) {
     const [user_email, setEmail] = useState("")
     const [user_password, setPassword] = useState("")
-    const [redirect, setRedirect] = useState(false)
+    const navigate = useNavigate();
+
 
     const handleEmail = (event) => {
-        console.log(user_email);
         setEmail(event.target.value)
     }
 
     const handlePassword = (event) => {
-        console.log(user_password)
         setPassword(event.target.value)
     }
 
@@ -26,15 +25,21 @@ function Login(props) {
                 url: `http://localhost:5000/auth/login`,
                 data: body
             })
-            if (response.status === 200)
-                setRedirect(true);
+            if (response.status === 200) {
+                try {
+                    await axios.get(`http://localhost:5000/id/${user_email}`).then(response => {
+                        navigate('/UserHome', { state: { userID: response.data[0].id } });
+                    })
+                } catch (err) {
+                    console.error(err.message);
+                }
+            }
+
         } catch (err) {
             console.error(err.message);
+            alert("Invalid Username and or password");
         }
     }
-
-    if (redirect)
-        return (<Navigate to="/UserHome" />)
 
     return (
 

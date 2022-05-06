@@ -1,14 +1,29 @@
 import React, { useState } from 'react';
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function UserHome() {
 
+    const { state } = useLocation()
+    const [username, setUsername] = useState("")
     const [cars, setCars] = useState([])
-    const [make, setMake] = useState("")
-    const [color, setColor] = useState("")
+    const [make, setMake] = useState("-")
+    const [color, setColor] = useState("-")
     const navigate = useNavigate();
     let carID = 0;
+
+    const getUsername = () => {
+        try {
+            axios
+                .get(`http://localhost:5000/name/${state.userID}`)
+                .then(response => {
+                    setUsername(response.data[0].username)
+                })
+
+        } catch (err) {
+            console.error(err.message)
+        }
+    }
 
     const getAllCars = () => {
         try {
@@ -16,7 +31,6 @@ function UserHome() {
                 .get(`http://localhost:5000/car`)
                 .then(response => {
                     setCars(response.data)
-                    console.log(response.data)
                 })
 
         } catch (err) {
@@ -25,42 +39,41 @@ function UserHome() {
     }
 
     React.useEffect(() => {
+        getUsername();
         getAllCars();
     }, [])
-
     const handleMake = (event) => {
         setMake(event.target.value)
-        console.log(make)
     }
 
     const handleColor = (event) => {
         setColor(event.target.value)
-        console.log(color)
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        if (make !== "-" && color !== "-")
+        if (make !== "-" && color !== "-") {
+            console.log(make)
+
             try {
                 axios
                     .get(`http://localhost:5000/car/${make}/${color}`)
                     .then(response => {
                         setCars(response.data)
-                        console.log(response.data)
                     })
 
             } catch (err) {
                 console.error(err.message)
             }
+        }
 
         else if (make !== "-")
             try {
                 axios
-                    .get(`http://localhost:5000/car/${make}`)
+                    .get(`http://localhost:5000/car/make/${make}`)
                     .then(response => {
                         setCars(response.data)
-                        console.log(response.data)
                     })
 
             } catch (err) {
@@ -70,10 +83,11 @@ function UserHome() {
         else if (color !== "-")
             try {
                 axios
-                    .get(`http://localhost:5000/car/${color}`)
+                    .get(`http://localhost:5000/car/color/${color}`)
                     .then(response => {
                         setCars(response.data)
                         console.log(response.data)
+                        console.log(color)
                     })
 
             } catch (err) {
@@ -86,18 +100,17 @@ function UserHome() {
 
     const setSelection = (id) => {
         carID = id;
-        console.log(carID)
         redirect()
     }
 
     const redirect = () => {
-        navigate('/CarDetail', { state: { car: carID } });
+        navigate('/CarDetail', { state: { car: carID, userID: state.userID } });
     }
 
     return (
         <div>
             <div className="jumbotron">
-                <h1 className="display-4 jumbo-text">Welcome</h1>
+                <h1 className="display-4 jumbo-text">Welcome, {username}</h1>
                 <hr className="my-4" />
                 <form className="row row-cols-2 d-inline-flex bd-highlight" onSubmit={handleSubmit}>
                     <div className="form-group">

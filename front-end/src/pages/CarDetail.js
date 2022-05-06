@@ -20,7 +20,6 @@ function CarDetail() {
                 .get(`http://localhost:5000/view/${state.car}`)
                 .then(response => {
                     setCar(response.data)
-                    console.log(response.data)
                 })
 
         } catch (err) {
@@ -36,9 +35,10 @@ function CarDetail() {
         leasePrice = ((price * .60) / 32).toFixed(2)
     }
 
-    const redirect = (vin, price) => {
-        navigate("/Checkout", { state: { VIN: vin, monthlyDue: price } });
+    const redirect = (id, price) => {
+        navigate("/Checkout", { state: { carID: id, monthlyDue: price, userID: state.userID } });
     }
+
 
     return (
         <div className="jumbotron">
@@ -52,11 +52,9 @@ function CarDetail() {
                     <p>{car.vin}</p>
                     <h1 className="display-6">${car.price}</h1>
                     <h5>
-                        <form>
-                            <button className="btn btn-primary" onClick={() => (redirect(car.vin, financePrice))}>Buy Now</button> for ${financePrice} per month for 60 months
-                            <br />Or<br />
-                            <button className="btn btn-primary" onClick={() => (redirect(car.vin, leasePrice))}>Lease Now</button> for ${leasePrice} per month for 32 months
-                        </form>
+                        <button className="btn btn-primary" onClick={() => (redirect(car.id, financePrice))}>Buy Now</button> for ${financePrice} per month for 60 months
+                        <br />Or<br />
+                        <button className="btn btn-primary" onClick={() => (redirect(car.id, leasePrice))}>Lease Now</button> for ${leasePrice} per month for 32 months
                     </h5>
                 </div>
             ))}
